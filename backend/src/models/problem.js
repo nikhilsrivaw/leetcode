@@ -1,19 +1,19 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
 const problemSchema = new Schema({
     title:{
-        type : String,
-        required: true 
+        type:String,
+        required:true
     },
     description:{
-        type : String,
+        type:String,
         required:true
     },
     difficulty:{
         type:String,
         enum:['easy','medium','hard'],
-        required:true
+        required:true,
     },
     tags:{
         type:String,
@@ -25,11 +25,10 @@ const problemSchema = new Schema({
             input:{
                 type:String,
                 required:true,
-
             },
             output:{
                 type:String,
-                required:true
+                required:true,
             },
             explanation:{
                 type:String,
@@ -37,40 +36,88 @@ const problemSchema = new Schema({
             }
         }
     ],
+
     hiddenTestCases:[
         {
             input:{
                 type:String,
                 required:true,
-
             },
             output:{
                 type:String,
-                required:true
+                required:true,
             }
-            
         }
     ],
-    startCode:[
+
+    startCode: [
         {
             language:{
                 type:String,
-                required:true
+                required:true,
             },
             initialCode:{
                 type:String,
                 required:true
             }
-
         }
     ],
+
+    referenceSolution:[
+        {
+            language:{
+                type:String,
+                required:true,
+            },
+            completeCode:{
+                type:String,
+                required:true
+            }
+        }
+    ],
+
     problemCreator:{
-        type:Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref:'user',
         required:true
     }
 })
 
 
-const Problem = mongoose.model('problem' , problemSchema);
-module.exports= Problem
+const Problem = mongoose.model('problem',problemSchema);
+
+module.exports = Problem;
+
+
+
+
+// const referenceSolution = [
+//     {
+//         language:"c++",
+//         completeCode:"C++ Code"
+//     },
+//     {
+//         language:"java",
+//         completeCode:"java Code"
+//     },
+//     {
+//         language:"js",
+//         completeCode:"JS Code"
+//     },
+// ]
+
+
+// const referenceSolution = [
+//     {
+//         language:"c++",
+//         completeCode:"C++ Code"
+//     },
+//     {
+//         language:"java",
+//         completeCode:"java Code"
+//     },
+//     {
+//         language:"js",
+//         completeCode:"JS Code"
+//     },
+// ]
