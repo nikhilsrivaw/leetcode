@@ -1,5 +1,7 @@
 const { getLanguageById, submitBatch, submitToken } = require("../utils/ProblemUtility");
-const Problem = require("../models/problem")
+const Problem = require("../models/problem");
+const User = require("../models/user");
+const Submission = require("../models/submissions");
 
 const createProblem = async (req, res) => {
 
@@ -198,9 +200,17 @@ const getAllProblem = async (req,res)=>{
 
 const solvedAllProblembyUser =async(req,res)=>{
   try {
-    const count = req.result.problemSolved.length;
 
-    res.status(200).send(count);
+    const userId = req.result._id;
+   
+    const user = await User.findById(userId).populate({
+      path:"problemSolved",
+      select:"_id title  difficulty tags "
+    });
+
+
+
+    res.status(200).send(user.problemSolved);
 
   } catch (error) {
     res.status(500).send("Internal Server Error" + error.message)
@@ -208,8 +218,26 @@ const solvedAllProblembyUser =async(req,res)=>{
   }
 
 }
+const submittedProblem = async (req,res)=>{
+  try {
+    const userId = req.result._id;
+    const problemId = req.params.pid;
 
-module.exports = {createProblem , updateProblem , deleteProblem ,getProblemById , getAllProblem ,solvedAllProblembyUser};
+    const asn = await Submission.find({userId , problemId});
+
+    if(!asn.length==0){
+      res.status(200).send("No submissions is present ")
+    }
+
+    res.status(200).send(asn)
+
+  } catch (error) {
+    res.status(500).send("Internal Server Error" + error.message)
+  }
+
+}
+
+module.exports = {createProblem , updateProblem , deleteProblem ,getProblemById , getAllProblem ,solvedAllProblembyUser,submittedProblem};
 
 
 // const submissions = [
