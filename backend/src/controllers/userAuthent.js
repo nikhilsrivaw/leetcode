@@ -50,10 +50,19 @@ const login = async (req, res) => {
         if (!match) {
             throw new Error("inavlid crredentails")
         }
+
+        const reply = {
+            firstName: user.firstName,
+            emailId: user.emailId,
+            _id: user._id
+        }
         const token = jwt.sign({ _id: user._id, emailId: emailId , role : user.role }, process.env.JWT_KEY, { expiresIn: 60 * 60 });
 
         res.cookie('token', token, { maxAge: 60 * 60 * 1000 })
-        res.status(200).send("logged in succesfully")
+        res.status(200).json({
+            user:reply,
+            message:"login succesfully"
+        })
 
 
 
