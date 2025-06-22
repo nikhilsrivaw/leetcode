@@ -21,9 +21,18 @@ const register = async (req, res) => {
         const user = await User.create(req.body);
 
         const token = jwt.sign({ _id: user._id,role:'user', emailId: emailId }, process.env.JWT_KEY, { expiresIn: 60 * 60 });
+        const reply = {
+            firstName: user.firstName,
+            emailId: user.emailId,
+            _id: user._id
+        }
 
         res.cookie('token', token, { maxAge: 60 * 60 * 1000 })
-        res.status(201).send("user reguister succeded")
+        res.status(201).json({
+            user:reply,
+            message:"login succesfully"
+        })
+
 
 
 
@@ -59,7 +68,7 @@ const login = async (req, res) => {
         const token = jwt.sign({ _id: user._id, emailId: emailId , role : user.role }, process.env.JWT_KEY, { expiresIn: 60 * 60 });
 
         res.cookie('token', token, { maxAge: 60 * 60 * 1000 })
-        res.status(200).json({
+        res.status(201).json({
             user:reply,
             message:"login succesfully"
         })
