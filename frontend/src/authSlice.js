@@ -5,11 +5,13 @@ export const registerUser = createAsyncThunk(
   'auth/register',
   async (userData, { rejectWithValue }) => {
     try {
-    const response =  await axiosClient.post('/user/register', userData);
-    return response.data.user;
+      const response = await axiosClient.post('/user/register', userData);
+      return response.data.user;
     } catch (error) {
-      return rejectWithValue(error);
+      const message = error.response?.data || error.message || "Something went wrong";
+      return rejectWithValue({ message });
     }
+
   }
 );
 
@@ -21,8 +23,10 @@ export const loginUser = createAsyncThunk(
       const response = await axiosClient.post('/user/login', credentials);
       return response.data.user;
     } catch (error) {
-      return rejectWithValue(error);
+      const message = error.response?.data || error.message || "Something went wrong";
+      return rejectWithValue({ message });
     }
+
   }
 );
 
@@ -33,8 +37,10 @@ export const checkAuth = createAsyncThunk(
       const { data } = await axiosClient.get('/user/check');
       return data.user;
     } catch (error) {
-      return rejectWithValue(error);
+      const message = error.response?.data || error.message || "Something went wrong";
+      return rejectWithValue({ message });
     }
+
   }
 );
 
@@ -45,8 +51,10 @@ export const logoutUser = createAsyncThunk(
       await axiosClient.post('/logout');
       return null;
     } catch (error) {
-      return rejectWithValue(error);
+      const message = error.response?.data || error.message || "Something went wrong";
+      return rejectWithValue({ message });
     }
+
   }
 );
 
@@ -78,7 +86,8 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
       })
-  
+
+
       // Login User Cases
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
@@ -95,7 +104,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
       })
-  
+
       // Check Auth Cases
       .addCase(checkAuth.pending, (state) => {
         state.loading = true;
@@ -112,7 +121,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
       })
-  
+
       // Logout User Cases
       .addCase(logoutUser.pending, (state) => {
         state.loading = true;

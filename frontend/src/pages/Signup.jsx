@@ -7,11 +7,15 @@ import {registerUser} from '../authSlice'
 import { useEffect } from 'react';
 import React from 'react';
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
 const signupSchema = z.object({
   firstName: z.string().min(3, "Minimum character should be 3"),
   emailId: z.string().email("Invalid Email"),
-  password: z.string().min(8, "Password is to weak")
+  password: z.string().regex(
+    passwordRegex,
+    "Password must include uppercase, lowercase, number, symbol and be at least 8 characters"
+  )
 });
 
 function Signup() {
