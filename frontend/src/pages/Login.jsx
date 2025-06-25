@@ -1,24 +1,36 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
+import {loginUser} from "../authSlice"
+import { useEffect } from 'react';
 
-const LoginSchema = z.object({
- 
+const signupSchema = z.object({
   emailId: z.string().email("Invalid Email"),
   password: z.string().min(8, "Password is to weak")
 });
 
 function Login() {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated, loading, error } = useSelector((state) => state.auth);
+  
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: zodResolver(LoginSchema) });
+  } = useForm({ resolver: zodResolver(signupSchema) });
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   const onSubmit = (data) => {
-    console.log(data);
-
-    // Backend data ko send kar dena chaiye?
+    dispatch(loginUser(data));
   };
 
   return (
@@ -28,7 +40,6 @@ function Login() {
           <h2 className="card-title justify-center text-3xl">Leetcode</h2> {/* Centered title */}
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* Existing form fields */}
-
 
             <div className="form-control  mt-4">
               <label className="label mb-1">
@@ -65,7 +76,7 @@ function Login() {
                 type="submit"
                 className="btn btn-primary"
               >
-                Login Up
+                Login
               </button>
             </div>
           </form>
@@ -76,3 +87,6 @@ function Login() {
 }
 
 export default Login;
+
+
+
